@@ -11,6 +11,9 @@ def license_plate_detection(itest):
     print(best_score)
     print(score_window)
 
+    if (best_score < 0.7):
+        print("License plate not found")
+
     win = best_window.copy()
 
     license_plate = edge_detection(win)
@@ -23,7 +26,7 @@ def filter_function(contours):
     filtered_contours2 = []
     while i < len(contours):
         diff = contours[i][1] - contours[i-1][1]
-        if abs(diff)>15:
+        if abs(diff)>10:
             if (contours[i][1] < contours[i-1][1]):
                 filtered_contours2.append(contours[i])
             else:
@@ -37,12 +40,12 @@ def edge_detection(win):
 
     #grayscale image
     plt.imshow(win)
-    plt.show()
+    plt.show(1)
 
     #Otsu threshold
     ret,thresh1 = cv2.threshold(win, 0, 255,cv2.THRESH_OTSU|cv2.THRESH_BINARY_INV)
     plt.imshow(thresh1)
-    plt.show()
+    plt.show(1)
 
     size = np.size(thresh1)
     nonZeros = cv2.countNonZero(thresh1)
@@ -58,12 +61,12 @@ def edge_detection(win):
     rect_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (kern, 1))
     dilation = cv2.dilate(thresh1, rect_kernel, iterations = 1)
     plt.imshow(dilation)
-    plt.show()
+    plt.show(1)
 
     # Find Edges of the image
     edged = cv2.Canny(dilation, 170, 200)
     plt.imshow(edged)
-    plt.show()
+    plt.show(1)
 
     window = find_contours(edged, thresh1, win)
     return window
